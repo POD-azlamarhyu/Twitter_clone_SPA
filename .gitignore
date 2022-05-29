@@ -1,0 +1,11 @@
+.DS_Store
+# client/node_modules/
+server/projectCfg/__pycache__/
+server/accounts/__pycache__/
+server/api/__pycache__/
+server/projectCfg/env.py
+.env
+server/media/comment/*
+server/media/icon/*
+server/media/tweet/*
+client/.env

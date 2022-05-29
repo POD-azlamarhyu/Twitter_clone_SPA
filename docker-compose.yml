@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: cont_db
+    image: postgres:13
+    volumes:
+      - pgdata:/var/lib/postgres/data
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=${POSTGRE_DB}
+      - POSTGRES_USER=${POSTGRE_USER}
+      - POSTGRES_PASSWORD=${POSTGRE_PW}
+
+  backend:
+    container_name: cont_back
+    build:
+      context: .
+      dockerfile: DockerfilePython
+    volumes:
+      - ./server:/server
+    tty: true
+    command: python manage.py runserver 0:8000
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+  frontend:
+    container_name: cont_front
+    build:
+      context: .
+      dockerfile: DockerfileNode
+    restart: always
+    volumes:
+      - ./client:/client
+      - node_modules_vol:/client/node_modules
+    command: sh -c "npm run dev"
+    tty: true
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+
+volumes:
+  pgdata: {}
+  node_modules_vol:

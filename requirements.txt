@@ -1,0 +1,13 @@
+Django==3.2
+django-filter==2.4.0
+psycopg2
+psycopg2-binary
+djangorestframework
+django-cors-headers==3.5.0
+Pillow
+django-debug-toolbar
+django-allauth
+django-rest-auth
+djangorestframework-simplejwt==4.6.0
+djoser
+PyJWT==2.0.0
