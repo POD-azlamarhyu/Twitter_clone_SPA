@@ -47,9 +47,7 @@ const CommentList = ({tid}) => {
                         {
                             comments && comments.map((comment) => {
                                 return (
-                                    <>
-                                        <Comment comment={comment} key={`${comment.id}comment`} tid={tid}/>
-                                    </>
+                                        <Comment key={comment.id} comment={comment} tid={tid}  />
                                 )
                                 })
                         }

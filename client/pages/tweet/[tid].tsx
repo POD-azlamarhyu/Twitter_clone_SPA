@@ -8,6 +8,10 @@ import Cookie from "universal-cookie";
 import NotFount from "../../components/NotFount";
 import CommentList from "../../components/CommentList";
 import CommentPost from "../../components/CommentPost";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+
 const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
 const cookie = new Cookie();
 
@@ -23,7 +27,6 @@ const Tweet = () => {
     
     useEffect(() => {
       const fetchData = async () => {
-        console.log(tid);
         const res = await fetch(
           `${apiEndPoint}api/tweet/${tid}/`,
           {
@@ -34,7 +37,7 @@ const Tweet = () => {
           }
         );
         const data = await res.json();
-        console.log(data);
+
         if (res.status === 401){
             setIsAuth(false);
             setResTweetDetail(false);
@@ -72,7 +75,6 @@ const Tweet = () => {
               }
           );
           const data = await res.json();
-          console.log(data);
           if (res.status === 200 || res.status === 201){
               setMyprofile(data[0]);
           }else if(res.status === 400 || res.status === 401 || res.status === 402 || res.status === 403 || res.status === 404){
@@ -102,6 +104,92 @@ const Tweet = () => {
           }
         }
     }
+
+    const checkIsLike = () =>{
+      const isExist=false;
+      if(likesArray !== null){
+        isExist = likesArray.some((elem)=>{
+          return elem === myprofile.user_profile;
+        });
+      }else{
+        isExist=false;
+      }
+
+      return isExist;
+    }
+
+    const onPatchLike = async() =>{
+      const formData = new FormData();
+      const patchLikeAry = likesArray;
+      const isPostedLike = checkIsLike();
+      const uid = myprofile.user_profile;
+      let isExtract = patchLikeAry.length;
+
+      if (isPostedLike){
+        patchLikeAry.forEach((elem)=>{
+          if(elem !== uid){
+            formData.append("like",elem);
+          }
+        })
+        
+      }else{
+        patchLikeAry.push(uid);
+        patchLikeAry.forEach((elem)=>{
+          formData.append("like",elem);
+        });
+      }
+      let res;
+      if(!isPostedLike){
+          console.log("新たにLikeを追加");
+          res = await fetch(
+            `${apiEndPoint}api/tweet/${tid}/`,
+            {
+              method: "PATCH",
+              headers:{
+                // "Content-Type": "application/json",
+                Authorization: `JWT ${cookie.get("access_token")}`,
+              },
+              body: formData,
+            }
+          );
+      }else{
+        if(isExtract === 1){
+          console.log("Like初期化");
+          formData.append("text",tweetDetail.text)
+          res = await fetch(
+            `${apiEndPoint}api/tweet/${tid}/`,
+            {
+              method: "PUT",
+              headers:{
+                // "Content-Type": "application/json",
+                "Authorization": `JWT ${cookie.get("access_token")}`,
+              },
+              body: formData,
+            }
+          );
+        }else{
+          console.log("unlikeします");
+          res = await fetch(`${apiEndPoint}api/tweet/${tid}/`,{
+              method: "PATCH",
+              headers: {
+                // "Content-Type": "application/json",
+                "Authorization": `JWT ${cookie.get("access_token")}`,
+              },
+              body: formData,
+            }
+          );
+        }
+      }
+      const data = await res.json();
+      if(res.status===200){
+        console.log("変更しました");
+        console.log(data);
+      }else{
+        console.log(res);
+        console.log("失敗しました");
+      }
+      
+    };
     
   return (
     <>
@@ -140,6 +228,9 @@ const Tweet = () => {
                           </div>
                           <div className="flex flex-row md:border-t-2 md:mx-2 my-3 justify-start">
                             <div className="flex flex-row">
+                              <span className="md:text-bold md:text-lg md:pl-2 md:pr-1" onClick={onPatchLike}>
+                              <FontAwesomeIcon icon={faHeart} />
+                              </span>
                               <p className="md:text-bold md:text-lg md:pl-2 md:pr-1">
                                 {likesArray.length}
                               </p>
@@ -150,7 +241,6 @@ const Tweet = () => {
                           </div>
                         </div>
                       </>
-                      
                     ):(
                       <>
                         <NotFount />

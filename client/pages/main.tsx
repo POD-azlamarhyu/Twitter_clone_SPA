@@ -35,12 +35,13 @@ const Main = () => {
                 setIsAuth(false);
                 setResTweet(false);
             }else if(res.status === 200 || res.status === 201){
-               setTweets(data); 
+               setTweets(data);
             }else{
                 setResTweet(false);
             }
         };
         fetchData();
+        console.log(tweets);
     },[]);
 
     return (

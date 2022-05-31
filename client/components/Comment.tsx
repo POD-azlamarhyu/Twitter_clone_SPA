@@ -2,13 +2,13 @@ import React from 'react'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-const Comment = ({comment,tweet_id}) => {
+const Comment = ({comment,tid}) => {
     const router = useRouter();
     const cid = comment.id
 
   return (
     <>
-        <Link href={{pathname: `/comment/${cid}`,query:{cid,tweet_id}}}>
+        <Link href={{pathname: `/comment/${cid}`,query:{cid,tid}}}>
             <div className='md:p-4 border-t border-b border-gray-400 cursor-pointer hover:bg-gray-300'>
                     <div className='my-3'>
                         <p className='text-left mx-3 break-words'>

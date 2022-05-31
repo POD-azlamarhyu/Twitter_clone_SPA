@@ -33,32 +33,22 @@ const EditProfile = ({isOpenModal,setIsOpenModal,profile_id,currentprofile}) => 
 
         if(editProfile.nickname !== ""){
             form_data.append("nickname",editProfile.nickname);
-        }else{
-            form_data.append("nickname",currentprofile.nickname);
         }
 
         if(editProfile.account !== ""){
             form_data.append("account",editProfile.account);
-        }else{
-            form_data.append("account",currentprofile.account);
         }
 
         if(editProfile.bio !== ""){
             form_data.append("bio",editProfile.bio);
-        }else{
-            form_data.append("bio",currentprofile.bio);
         }
         
         if(icon !== ""){
             form_data.append("icon",icon);
-        }else{
-            form_data.append("icon",currentprofile.icon);
         }
 
         if(editProfile.link !== ""){
             form_data.append("link",editProfile.link);
-        }else{
-            form_data.append("link",currentprofile.link);
         }
         
 
