@@ -254,7 +254,7 @@ const Tweet = () => {
                         Delete
                       </button>
 
-                      <button className="block sm:text-lg md:text-xl text-white bg-yellow-500 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded md:w-1/6 text-center md:mx-3 md:my-1">
+                      <button className="block sm:text-lg md:text-xl text-white bg-blue-500 py-2 px-2 focus:outline-none hover:bg-blue-600 rounded md:w-1/6 text-center md:mx-3 md:my-1">
                         Edit
                       </button>
                       </div>

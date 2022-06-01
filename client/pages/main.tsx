@@ -52,7 +52,7 @@ const Main = () => {
                     <div className='my-3'>
                         {
                             tweets && resTweet &&
-                                tweets.reverse().map((tweet) => {
+                                tweets.map((tweet) => {
                                     return(
                                         <Tweet key={tweet.id} tweet={tweet} />
                                     )

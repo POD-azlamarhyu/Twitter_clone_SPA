@@ -22,7 +22,7 @@ class TweetViewSet(viewsets.ModelViewSet):
 
 class TweetListView(ListAPIView):
     
-    queryset = Tweet.objects.all()
+    queryset = Tweet.objects.all().order_by('-created_on')
     serializer_class = TweetSerializer
         
         
@@ -35,7 +35,8 @@ class CommentListView(ListAPIView):
         query = self.request.query_params.get("tid",None)
         qs = {}
         if query is not None:
-            qs= self.queryset.filter(tweet=query) 
+            qs= self.queryset.filter(tweet=query)
+            qs=qs.order_by('-created_on')
         return qs
         
 class CommentViewSet(viewsets.ModelViewSet):
