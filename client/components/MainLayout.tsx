@@ -2,7 +2,7 @@ import React from 'react'
 import HomeMenu from './HomeMenu';
 import Aside from './Aside';
 
-const MainLayout = ({children}) => {
+const MainLayout:React.FC = ({children}:{children:any}) => {
   return (
     <>
         <HomeMenu />

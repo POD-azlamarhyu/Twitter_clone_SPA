@@ -1,14 +1,17 @@
 import React from 'react'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { commentType } from '../pages/api/types';
 
-const Comment = ({comment,tid}) => {
+const Comment = ({comment,tid,uid}:{comment:commentType,tid:number,uid:number}) => {
     const router = useRouter();
-    const cid = comment.id
+    const cid:number = comment.id;
 
   return (
     <>
-        <Link href={{pathname: `/comment/${cid}`,query:{cid,tid}}}>
+        <Link 
+            href={{pathname:`/comment/${cid}`,query:{cid,tid}}}
+        >
             <div className='md:p-4 border-t border-b border-gray-400 cursor-pointer hover:bg-gray-300'>
                     <div className='my-3'>
                         <p className='text-left mx-3 break-words'>

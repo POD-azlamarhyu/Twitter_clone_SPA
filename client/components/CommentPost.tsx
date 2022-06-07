@@ -2,47 +2,51 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { useState,useEffect,useRef } from 'react';
 import Cookie from "universal-cookie";
-import Layout from "./Layout";
-import MainLayout from "./MainLayout";
-import NotFount from "./NotFount";
 import axios from 'axios';
+import { commentPostType,apiEndpointType } from '../pages/api/types';
 
-const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
+const apiEndPoint:apiEndpointType = process.env.NEXT_PUBLIC_DEVAPI_URL;
 const cookie = new Cookie();
 
-const CommentPost = ({tid}) => {
+const CommentPost = ({tid,uid}:{tid:number,uid:number}) => {
 
     const router = useRouter();
     const [userProfile,setUserProfile] = useState([]);
     const [isAuth,setIsAuth] = useState(true);
-    const [commentImg,setCommentImg] = useState("");
-    const [text,setText] = useState("");
+    const [commentImg,setCommentImg] = useState<string | File>("");
+    const [text,setText] = useState<string>("");
     const inputImageDom = useRef(null);
-    const like = [];
+    const like:number[] = [];
 
 
     // const onChangeForm = (e) => {
     //     setFormData({...formData,[e.target.name]: e.target.value});
     // }
 
-    const onChangeImg = (e) => {
-        setCommentImg(e.target.files[0]);
+    const onChangeImg = (e:React.ChangeEvent<HTMLInputElement>):void => {
+        let uploadFile;
+        e.currentTarget.files !== null ? (
+            uploadFile = e.currentTarget.files[0] 
+        ):(
+            uploadFile = ""
+        )
+        setCommentImg(uploadFile);
     }
-    const onChangeText = (e) => {
+    const onChangeText = (e:React.ChangeEvent<HTMLInputElement>):void => {
         setText(e.target.value);
     }
 
-    const postComment = async(e) => {
+    const postComment = async(e:React.FormEvent<HTMLFormElement>):Promise<void> => {
         e.preventDefault();
         let img;
         const form_data = new FormData();
         form_data.append('text',text);
-        form_data.append('tweet',parseInt(tid));
+        form_data.append('tweet',tid);
         if(commentImg){
             form_data.append("comment_img",commentImg);
             img = commentImg;
         }else{
-            img=null;
+            img="";
             form_data.append("comment_img",img);
         }
         const res = await fetch(

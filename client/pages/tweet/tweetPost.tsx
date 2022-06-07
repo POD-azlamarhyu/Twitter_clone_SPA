@@ -6,19 +6,20 @@ import Layout from "../../components/Layout";
 import MainLayout from "../../components/MainLayout";
 import NotFount from "../../components/NotFount";
 import axios from 'axios';
+import { apiEndpointType,profileType } from '../api/types';
 
-const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
-const cookie = new Cookie();
+const apiEndPoint:apiEndpointType = process.env.NEXT_PUBLIC_DEVAPI_URL;
+const cookie:any = new Cookie();
 
-const tweetPost = () => {
+const tweetPost:React.FC = () => {
 
-    const router = useRouter();
-    const [userProfile,setUserProfile] = useState([]);
-    const [isAuth,setIsAuth] = useState(true);
-    const [tweetImg,setTweetImg] = useState("");
-    const [text,setText] = useState("");
+    const router:any = useRouter();
+    const [userProfile,setUserProfile] = useState<profileType[]>([]);
+    const [isAuth,setIsAuth] = useState<boolean>(true);
+    const [tweetImg,setTweetImg] = useState<string|File>("");
+    const [text,setText] = useState<string>("");
     const inputImageDom = useRef();
-    const like = [];
+    const like:number[] = [];
 
 
     // const onChangeForm = (e) => {
@@ -26,7 +27,7 @@ const tweetPost = () => {
     // }
 
     useEffect(() => {
-        const getUserId = async () => {
+        const getUserId = async ():Promise<void> => {
             const res = await fetch(
                 `${apiEndPoint}auth/user/myprofiles/`,
                 {
@@ -50,17 +51,22 @@ const tweetPost = () => {
             }
         }
         getUserId();
-    },[]);
+    },[cookie.get("access_token")]);
 
-    const onChangeImg = (e) => {
-        setTweetImg(e.target.files[0]);
-        console.log(tweetImg);
+    const onChangeImg = (e:React.ChangeEvent<HTMLInputElement>) => {
+        let uploadFile;
+        e.currentTarget.files !== null ? (
+            uploadFile = e.currentTarget.files[0]
+        ):(
+            uploadFile=""
+        )
+        setTweetImg(uploadFile);
     }
-    const onChangeText = (e) => {
+    const onChangeText = (e:React.ChangeEvent<HTMLInputElement>) => {
         setText(e.target.value);
     }
 
-    const postTweet = async(e) => {
+    const postTweet = async(e:Event):Promise<void> => {
         e.preventDefault();
         let img;
         const form_data = new FormData();

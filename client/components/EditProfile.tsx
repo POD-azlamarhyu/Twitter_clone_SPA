@@ -5,32 +5,38 @@ import Cookie from "universal-cookie";
 const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { editpProfileType,apiEndpointType, profileType} from '../pages/api/types';
+
 const cookie = new Cookie();
 
-const EditProfile = ({isOpenModal,setIsOpenModal,profile_id,currentprofile}) => {
+const EditProfile = ({isOpenModal,setIsOpenModal,profile_id,currentprofile}:{isOpenModal:boolean,setIsOpenModal:React.Dispatch<React.SetStateAction<boolean>>,profile_id:number,currentprofile:profileType}) => {
 
-    const [editProfile,setEditProfile] = useState({
-        account:"",
-        bio:"",
-        icon:"",
-        link: "",
+    const [editProfile,setEditProfile] = useState<editpProfileType>({
         nickname:"",
-        update_at: '',
+        account:'',
+        bio: '',
+        icon:'',
+        link: "",
     });
-    const [icon,setIcon] = useState("");
+    const [icon,setIcon] = useState<string | File>("");
     const inputImageDom = useRef(null);
-    const onChangeImg = (e) => {
-        setIcon(e.target.files[0]);
+    const onChangeImg = (e:React.ChangeEvent<HTMLInputElement>):void => {
+        let uploadFile;
+        e.currentTarget.files !== null ? (
+            uploadFile = e.currentTarget.files[0]
+        ):(
+            uploadFile=""
+        )
+        setIcon(uploadFile);
     }
-    const onChange = (e) => {
+    const onChange = (e:React.ChangeEvent<HTMLInputElement>):void => {
         setEditProfile({...editProfile,[e.target.name]: e.target.value});
     }
 
-    const onSubmitProfile = async(e) =>{
+    const onSubmitProfile = async(e:React.FormEvent<HTMLFormElement>):Promise<void> =>{
         e.preventDefault();
-        console.log(currentprofile);
-        const form_data = new FormData();
-
+        const form_data:any = new FormData();
+        console.log(editProfile);
         if(editProfile.nickname !== ""){
             form_data.append("nickname",editProfile.nickname);
         }
@@ -52,24 +58,27 @@ const EditProfile = ({isOpenModal,setIsOpenModal,profile_id,currentprofile}) => 
         }
         
 
-        const res = await fetch(`${apiEndPoint}auth/user/profile/${profile_id}/`,{
+        const res:any = await fetch(`${apiEndPoint}auth/user/profile/${profile_id}/`,{
             method:"PATCH",
             headers:{
                 "Authorization": `JWT ${cookie.get("access_token")}`,
             },
             body:form_data,
         })
-        const data = await res.json();
+        const data:any = await res.json();
         if (res.status === 200 ){
             closeModal();
+            console.log(data);
+        }else{
+            alert("保存に失敗しました");
         }
     }
 
-    const closeModal = () =>{
+    const closeModal = ():void =>{
         setIsOpenModal(!isOpenModal);
     }
 
-    const openImageHandler = () => {
+    const openImageHandler = ():void => {
         inputImageDom.current.click();
     }
 

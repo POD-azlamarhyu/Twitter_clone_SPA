@@ -4,31 +4,38 @@ import { useState,useEffect,useContext,useRef } from "react";
 import Cookie from "universal-cookie";
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
-const cookie = new Cookie();
+import { editProfileType,apiEndpointType } from '../pages/api/types';
 
-const CreateProfile = ({isCreateOpenModal,setIsCreateOpenModal}) => {
+const apiEndPoint:apiEndpointType = process.env.NEXT_PUBLIC_DEVAPI_URL;
+const cookie:any = new Cookie();
 
-    const [createProfile,setCreateProfile] = useState({
+const CreateProfile = ({isCreateOpenModal,setIsCreateOpenModal}:{isCreateOpenModal:boolean,setIsCreateOpenModal:React.Dispatch<React.SetStateAction<boolean>>}) => {
+
+    const [createProfile,setCreateProfile] = useState<editProfileType>({
+        nickname:"",
         account:'',
         bio: '',
         icon:'',
         link: "",
-        nickname:"",
-        update_at: '',
     });
-    const [icon,setIcon] = useState("");
+    const [icon,setIcon] = useState<string|File>("");
 
     const inputImageDom = useRef(null);
 
-    const onChangeImg = (e) => {
-        setIcon(e.target.files[0]);
+    const onChangeImg = (e:React.ChangeEvent<HTMLInputElement>) => {
+        let uploadFile;
+        e.currentTarget.files !== null ? (
+            uploadFile = e.currentTarget.files[0]
+        ):(
+            uploadFile=""
+        )
+        setIcon(uploadFile);
     }
-    const onChange = (e) => {
+    const onChange = (e:React.ChangeEvent<HTMLInputElement>):void => {
         setCreateProfile({...createProfile,[e.target.name]: e.target.value});
     }
 
-    const onSubmitProfile = async(e) =>{
+    const onSubmitProfile = async(e:React.FormEvent<HTMLFormElement>):Promise<void> =>{
         // e.preventDefault();
         const form_data = new FormData();
         form_data.append("nickname",createProfile.nickname);
@@ -50,11 +57,11 @@ const CreateProfile = ({isCreateOpenModal,setIsCreateOpenModal}) => {
         }
     }
 
-    const closeModal = () =>{
+    const closeModal = ():void =>{
         setIsCreateOpenModal(!isCreateOpenModal);
     }
 
-    const openImageHandler = () => {
+    const openImageHandler = ():void => {
         inputImageDom.current.click();
     }
 

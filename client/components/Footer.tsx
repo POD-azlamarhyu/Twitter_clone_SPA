@@ -8,7 +8,7 @@ export const copyright = "C.I. Inc. 9Chan 2022";
 
 
 
-const Footer = () => {
+const Footer:React.FC = () => {
 
     return(
         <>

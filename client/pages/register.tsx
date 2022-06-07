@@ -1,28 +1,31 @@
 import type {NextPage} from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import React from "react";
 import {useState} from "react";
 import Cookie from "universal-cookie";
 import axios from 'axios';
 import Layout from "../components/Layout";
+import { apiEndpointType,authFormData,registerResType } from "./api/types";
 
-const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
+const apiEndPoint:apiEndpointType = process.env.NEXT_PUBLIC_DEVAPI_URL;
 
-const cookie = new Cookie();
+const cookie:any = new Cookie();
 
 
-const Register = () => {
+const Register:React.FC = () => {
     const router = useRouter();
 
-    const [formData,setFormData] = useState({
+    const [formData,setFormData] = useState<authFormData>({
         email:'',
         password:'',
     });
     const {email,password} = formData; 
-    const onChange = (e) => {
+    const onChange = (e:React.ChangeEvent<HTMLInputElement>):void => {
         setFormData({...formData,[e.target.name]: e.target.value});
     }
-    const postRegister = async () => {
+    const postRegister = async ():Promise<void> => {
+        
         try{
             console.info("アカウント登録を行います\n");
             await fetch(
@@ -38,7 +41,7 @@ const Register = () => {
                     },
                 }
             )
-            .then((res) => {
+            .then((res:any) => {
                 console.info(res);
                 if (res.status === 201 && res.ok){
                     return res.json();
@@ -47,7 +50,7 @@ const Register = () => {
                     throw "ユーザ登録に失敗しました";
                 }
             })
-            .then((data)=>{
+            .then((data:registerResType)=>{
                 console.info(data);
                 router.push("/auth");
             })
@@ -57,12 +60,12 @@ const Register = () => {
         }
     };
 
-    const authUser = async (e) => {
+    const authUser = async (e:React.FormEvent<HTMLFormElement>):Promise<void> => {
         e.preventDefault();
         postRegister();
     };
 
-    const goToLogin = () => {
+    const goToLogin = ():void => {
         router.push("/auth");
     }
 

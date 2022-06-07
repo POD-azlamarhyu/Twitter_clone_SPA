@@ -11,33 +11,34 @@ import Cookie from "universal-cookie";
 import Image from 'next/image';
 import CreateProfile from "../../components/CreateProfile";
 import DisplayProfile from '../../components/DisplayProfile';
-const NoImage = require("../../public/no_image_logo.png").default;
-const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
+import NonProfile from '../../components/NonProfile';
 
-const cookie = new Cookie();
+import { profileType,editProfileType,apiEndpointType } from '../api/types';
+
+const apiEndPoint:apiEndpointType = process.env.NEXT_PUBLIC_DEVAPI_URL;
+
+const cookie:any = new Cookie();
 
 
-const Profile = () => {
+const Profile:React.FC = () => {
 
-    // const {isLogin,setLogin,profile,setUserInfo} = useContext(isLoginContext);
-    const [myprofile,setMyprofile] = useState({
+    const [myprofile,setMyprofile] = useState<profileType>({
+        id: 0,
+        nickname:"",
+        user_profile:0,
         account:'',
         bio: '',
         icon:'',
-        id: 0,
         link: "",
-        nickname:"",
-        update_at: '',
-        user_profile:0,
+        created_on:'',
+        update_on: '',
     });
-    const [isLogin,setIsLogin] = useState(false);
-    const [isOpenModal,setIsOpenModal] = useState(false);
-    const [isIcon,setIsIcon] = useState("");
-
-    const [isCreateOpenModal,setIsCreateOpenModal] = useState(false);
+    const [isLogin,setIsLogin] = useState<boolean>(false);
+    
+    const [isCreateOpenModal,setIsCreateOpenModal] = useState<boolean>(false);
 
     useEffect(()=> {
-        const getUserId = async() =>{
+        const getUserId = async():void =>{
             const res = await fetch(
                 `${apiEndPoint}auth/user/myprofiles/`,
                 {
@@ -48,7 +49,7 @@ const Profile = () => {
                 }
             );
             const data = await res.json();
-            console.log(data);
+
             if (res.status === 200 || res.status === 201){
                 setIsLogin(!isLogin);
                 setMyprofile(data[0]);
@@ -60,11 +61,7 @@ const Profile = () => {
         getUserId();
     },[cookie.get("access_token")]);
 
-    const openEditProfileModal = () =>{
-        setIsOpenModal(!isOpenModal);
-    }
-
-    const openCreateProfileModal = () =>{
+    const openCreateProfileModal = ():void =>{
         setIsCreateOpenModal(!isCreateOpenModal);
     }
 
@@ -78,19 +75,19 @@ const Profile = () => {
                             <DisplayProfile myprofile={myprofile}/>  
                         ):(
                             <>
-                                <div className='md:my-3 md:mx-5 md:px-7'>
+                            <div className='md:my-3 md:mx-5 md:px-7'>
                                 <div className='flex justify-center items-center align-middle md:my-4 md:py-3'>
                                     <p>
                                         プロフィールがありません。作成してください。
                                     </p>
                                 </div>
-                                </div>
-                                <div className="flex md:mx-2 md:my-4 md:p-2 justify-end">
-                                    <button className="block sm:text-lg md:text-xl text-white bg-blue-600 md:py-3 md:px-5 focus:outline-none hover:bg-blue-800 rounded text-center md:mx-3" onClick={openCreateProfileModal}>
-                                        Create Profile
-                                    </button>
-                                </div>
-                            </>
+                            </div>
+                            <div className="flex md:mx-2 md:my-4 md:p-2 justify-end">
+                                <button className="block sm:text-lg md:text-xl text-white bg-blue-600 md:py-3 md:px-5 focus:outline-none hover:bg-blue-800 rounded text-center md:mx-3" onClick={openCreateProfileModal}>
+                                    Create Profile
+                                </button>
+                            </div>
+                        </>
                         )}
                         <CreateProfile isCreateOpenModal={isCreateOpenModal} setIsCreateOpenModal={setIsCreateOpenModal}/>
                     </>

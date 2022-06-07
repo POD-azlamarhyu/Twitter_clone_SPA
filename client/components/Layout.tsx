@@ -4,7 +4,7 @@ import Navigation from "./Navigation";
 import React from 'react'
 import Footer from "./Footer";
 
-const Layout = ({children,title}) => {
+const Layout:React.FC = ({children,title}:{children:any,title:string}) => {
   return (
     <>
         <Head>

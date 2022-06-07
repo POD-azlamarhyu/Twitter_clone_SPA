@@ -11,22 +11,43 @@ import CommentPost from "../../components/CommentPost";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { apiEndpointType,tweetsType,profileType } from "../api/types";
 
-const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
-const cookie = new Cookie();
 
-const Tweet = () => {
+const apiEndPoint:apiEndpointType = process.env.NEXT_PUBLIC_DEVAPI_URL;
+const cookie:any = new Cookie();
+
+const Tweet:React.FC = () => {
     const router = useRouter();
-    const {tid} = router.query;
+    const {tid}:{tid:number} = router.query;
 
-    const [tweetDetail,setTweetDetail] = useState({});
-    const [isAuth,setIsAuth] = useState(true);
-    const [resTweetDetail,setResTweetDetail] = useState(true);
-    const [likesArray,setLikesArray] = useState([]);
-    
+    const [tweetDetail,setTweetDetail] = useState<tweetsType>({
+      id:0,
+      text:"",
+      user_tweet:0,
+      created_on:"",
+      tweet_img:"",
+      update_on:"",
+      like:[],
+    });
+    const [isAuth,setIsAuth] = useState<boolean>(true);
+    const [resTweetDetail,setResTweetDetail] = useState<boolean>(true);
+    const [likesArray,setLikesArray] = useState<number[]>([]);
+    const [myprofile,setMyprofile] = useState<profileType>({
+      id: 0,
+      nickname:"",
+      user_profile:0,
+      account:'',
+      bio: '',
+      icon:'',
+      link: "",
+      created_on:'',
+      update_on: '',
+    });
+    const [isLogin,setIsLogin] = useState<boolean>(false);
     
     useEffect(() => {
-      const fetchData = async () => {
+      const fetchData = async ():Promise<void> => {
         const res = await fetch(
           `${apiEndPoint}api/tweet/${tid}/`,
           {
@@ -51,20 +72,10 @@ const Tweet = () => {
       fetchData();
     },[tid]);
 
-    const [myprofile,setMyprofile] = useState({
-      account:'',
-      bio: '',
-      icon:'',
-      id: 0,
-      link: "",
-      nickname:"",
-      update_at: '',
-      user_profile:0,
-    });
-    const [isLogin,setIsLogin] = useState(false);
+    
 
     useEffect(()=> {
-      const getUserId = async() =>{
+      const getUserId = async():Promise<void> =>{
           const res = await fetch(
               `${apiEndPoint}auth/user/myprofiles/`,
               {
@@ -78,7 +89,7 @@ const Tweet = () => {
           if (res.status === 200 || res.status === 201){
               setMyprofile(data[0]);
           }else if(res.status === 400 || res.status === 401 || res.status === 402 || res.status === 403 || res.status === 404){
-              setMyprofile([]);
+              setMyprofile(myprofile);
           }
   
       }
@@ -88,7 +99,7 @@ const Tweet = () => {
     // console.log(tweetDetail);
     // console.log(likesArray);
     
-    const confirmDelete = async(e) => {
+    const confirmDelete = async(e:React.MouseEvent<HTMLInputElement>):Promise<void> => {
         const res = window.confirm("このツイートを削除します.よろしいですか？");
         if(res){
           const query_res = await fetch(`${apiEndPoint}api/tweet/${tid}/`,
@@ -105,10 +116,10 @@ const Tweet = () => {
         }
     }
 
-    const checkIsLike = () =>{
-      const isExist=false;
+    const checkIsLike = ():boolean =>{
+      let isExist:boolean=false;
       if(likesArray !== null){
-        isExist = likesArray.some((elem)=>{
+        isExist = likesArray.some((elem:number)=>{
           return elem === myprofile.user_profile;
         });
       }else{
@@ -118,15 +129,16 @@ const Tweet = () => {
       return isExist;
     }
 
-    const onPatchLike = async() =>{
-      const formData = new FormData();
-      const patchLikeAry = likesArray;
-      const isPostedLike = checkIsLike();
-      const uid = myprofile.user_profile;
-      let isExtract = patchLikeAry.length;
+    const onPatchLike = async(e:React.MouseEvent<HTMLInputElement>):Promise<void> =>{
+      // e.preventDefault();
+      const formData:any = new FormData();
+      const patchLikeAry:number[] = likesArray;
+      const isPostedLike:boolean = checkIsLike();
+      const uid:number = myprofile.user_profile;
+      let isExtract:number = patchLikeAry.length;
 
       if (isPostedLike){
-        patchLikeAry.forEach((elem)=>{
+        patchLikeAry.forEach((elem:number)=>{
           if(elem !== uid){
             formData.append("like",elem);
           }
@@ -134,13 +146,13 @@ const Tweet = () => {
         
       }else{
         patchLikeAry.push(uid);
-        patchLikeAry.forEach((elem)=>{
+        patchLikeAry.forEach((elem:number)=>{
           formData.append("like",elem);
         });
       }
-      let res;
+      let res:any;
       if(!isPostedLike){
-          console.log("新たにLikeを追加");
+          // console.log("新たにLikeを追加");
           res = await fetch(
             `${apiEndPoint}api/tweet/${tid}/`,
             {
@@ -154,7 +166,7 @@ const Tweet = () => {
           );
       }else{
         if(isExtract === 1){
-          console.log("Like初期化");
+          // console.log("Like初期化");
           formData.append("text",tweetDetail.text)
           res = await fetch(
             `${apiEndPoint}api/tweet/${tid}/`,
@@ -168,7 +180,7 @@ const Tweet = () => {
             }
           );
         }else{
-          console.log("unlikeします");
+          // console.log("unlikeします");
           res = await fetch(`${apiEndPoint}api/tweet/${tid}/`,{
               method: "PATCH",
               headers: {
@@ -180,7 +192,7 @@ const Tweet = () => {
           );
         }
       }
-      const data = await res.json();
+      const data:tweetsType|any = await res.json();
       if(res.status===200){
         console.log("変更しました");
         console.log(data);
@@ -261,8 +273,8 @@ const Tweet = () => {
                     ):(
                       <></>
                     )}
-                    <CommentPost tid={tid}/>
-                    <CommentList tid={tid}/>
+                    <CommentPost tid={tid} uid={myprofile.user_profile}/>
+                    <CommentList tid={tid} uid={myprofile.user_profile}/>
                 </MainLayout>
             </div>
         </Layout>

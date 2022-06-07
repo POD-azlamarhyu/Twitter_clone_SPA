@@ -1,13 +1,14 @@
 import React from 'react'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { tweetsType } from '../pages/api/types';
 
 const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
 
 
-const Tweet = ({tweet}) => {
-    const router = useRouter();
-    const tid = tweet.id;
+const Tweet = ({tweet}:{tweet:tweetsType}) => {
+    const router:any = useRouter();
+    const tid:number = tweet.id;
 
   return (
     <>

@@ -7,24 +7,39 @@ import { useEffect,useState  } from "react";
 import Cookie from "universal-cookie";
 import NotFount from "../../components/NotFount";
 import CommentList from "../../components/CommentList";
-const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
+import { profileType,commentType,apiEndpointType } from "../api/types";
+
+const apiEndPoint:apiEndpointType = process.env.NEXT_PUBLIC_DEVAPI_URL;
 const cookie = new Cookie();
 
-
-
-
-const Comment = () => {
+const Comment:React.FC = () => {
     const router = useRouter();
-    const {cid,tid} = router.query;
+    const {cid,tid}:{cid:number,tid:number} = router.query;
 
-    const [commentDetail,setCommentDetail] = useState({});
-    const [isAuth,setIsAuth] = useState(true);
-    const [resCommentDetail,setResCommentDetail] = useState(true);
-    
-    
+    const [commentDetail,setCommentDetail] = useState<commentType>({
+      id:0,
+      text:"",
+      user_comment:0,
+      tweet:0,
+      comment_img:"",
+      created_on:"",
+    });
+    const [isAuth,setIsAuth] = useState<boolean>(true);
+    const [resCommentDetail,setResCommentDetail] = useState<boolean>(true);
+    const [myprofile,setMyprofile] = useState<profileType>({
+      id: 0,
+      nickname:"",
+      user_profile:0,
+      account:'',
+      bio: '',
+      icon:'',
+      link: "",
+      created_on:'',
+      update_on: '',
+    });
     
     useEffect(() => {
-      const fetchData = async () => {
+      const fetchData = async ():Promise<void> => {
         const res = await fetch(
           `${apiEndPoint}api/comment/${cid}/`,
           {
@@ -47,11 +62,31 @@ const Comment = () => {
       };
       fetchData();
     },[cid]);
-    
+    useEffect(()=> {
+      const getUserId = async():Promise<void> =>{
+          const res = await fetch(
+              `${apiEndPoint}auth/user/myprofiles/`,
+              {
+                  method: "GET",
+                  headers:{
+                      "Authorization": `JWT ${cookie.get("access_token")}`,
+                  },
+              }
+          );
+          const data = await res.json();
+          if (res.status === 200 || res.status === 201){
+              setMyprofile(data[0]);
+          }else if(res.status === 400 || res.status === 401 || res.status === 402 || res.status === 403 || res.status === 404){
+              setMyprofile(myprofile);
+          }
+  
+      }
+      getUserId();
+  },[cookie.get("access_token")]);
     // console.log(tweetDetail);
     // console.log(likesArray);
     
-    const confirmDelete = async(e) => {
+    const confirmDelete = async(e:React.MouseEvent<HTMLInputElement>):Promise<void> => {
         const res = window.confirm("このツイートを削除します.よろしいですか？");
         if(res){
           const query_res = await fetch(`${apiEndPoint}api/comment/${cid}/`,
@@ -63,7 +98,7 @@ const Comment = () => {
             }
           )
           if (query_res.ok){
-            router.push(`/tweet/[${tweet_id}]`);
+            router.push(`/tweet/[${tid}]`);
           }
         }
     }
@@ -76,7 +111,7 @@ const Comment = () => {
                 <MainLayout>
                     <div className="flex md:m-2 md:p-2">
                       <Link
-                        href={`/tweet/[${tid}]`}
+                        href={`/tweet/${tid}`}
                       >
                           <a className="block sm:text-lg md:text-xl text-white bg-yellow-500 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded md:w-1/6 text-center">
                             Back
@@ -113,17 +148,20 @@ const Comment = () => {
                       </> 
                     )}
                     </div>
-                    <div className="flex md:m-2 md:p-2 justify-end">
+                    {myprofile.user_profile === commentDetail.user_comment ? (
+                      <div className="flex md:m-2 md:p-2 justify-end">
 
-                          <button className="block sm:text-lg md:text-xl text-white bg-red-500 md:py-2 md:px-2 focus:outline-none hover:bg-red-600 rounded md:w-1/6 text-center md:mx-3 md:my-1" onClick={confirmDelete}>
-                            Delete
-                          </button>
-
-                          <button className="block sm:text-lg md:text-xl text-white bg-yellow-500 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded md:w-1/6 text-center md:mx-3 md:my-1">
-                            Edit
-                          </button>
-                    </div>
-                    <CommentList tweet_id={tid}/>
+                        <button className="block sm:text-lg md:text-xl text-white bg-red-500 md:py-2 md:px-2 focus:outline-none hover:bg-red-600 rounded md:w-1/6 text-center md:mx-3 md:my-1" onClick={confirmDelete}>
+                          Delete
+                        </button>
+  
+                        <button className="block sm:text-lg md:text-xl text-white bg-yellow-500 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded md:w-1/6 text-center md:mx-3 md:my-1">
+                          Edit
+                        </button>
+                      </div>
+                    ):(
+                      <></>
+                    )}
                 </MainLayout>
             </div>
         </Layout>

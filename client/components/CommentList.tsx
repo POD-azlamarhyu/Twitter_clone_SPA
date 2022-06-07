@@ -4,21 +4,21 @@ import { useRouter} from "next/router";
 import Cookie from "universal-cookie";
 import Comment from './Comment';
 import axios from 'axios';
+import { commentType,apiEndpointType } from '../pages/api/types';
 
 const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
 const cookie = new Cookie();
 
 
-const CommentList = ({tid}) => {
+const CommentList = ({tid,uid}:{tid:number,uid:number}) => {
 
     const router = useRouter();
-    const [comments,setComments] = useState([]);
-    const [isComments,setIsComments] = useState(true);
+    const [comments,setComments] = useState<commentType[]>([]);
+    const [isComments,setIsComments] = useState<boolean>(true);
 
     useEffect(() => {
-        const getComment = async() => {
-            const form_data = new FormData();
-            form_data.append("tweet",tid);
+        const getComment = async():Promise<void> => {
+
             const res = await axios.get(
                 `${apiEndPoint}api/commentlist/`,
                 {
@@ -47,7 +47,12 @@ const CommentList = ({tid}) => {
                         {
                             comments && comments.map((comment) => {
                                 return (
-                                        <Comment key={comment.id} comment={comment} tid={tid}  />
+                                        <Comment 
+                                            key={comment.id} 
+                                            comment={comment} 
+                                            tid={tid}
+                                            uid={uid}
+                                        />
                                 )
                                 })
                         }
