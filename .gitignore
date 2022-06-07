@@ -1,5 +1,4 @@
 .DS_Store
-# client/node_modules/
 server/projectCfg/__pycache__/
 server/accounts/__pycache__/
 server/api/__pycache__/
