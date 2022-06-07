@@ -1,4 +1,5 @@
 import type {NextPage} from "next";
+import React, { ChangeEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {useState,useContext} from "react";
@@ -6,52 +7,27 @@ import Cookie from "universal-cookie";
 import axios from 'axios';
 import Layout from "../components/Layout";
 import isLoginContext from './_app';
+import { ChangeEventHandler } from "react";
+import { apiEndpointType,authFormData,loginResType } from "./api/types";
 
-const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
+const apiEndPoint:apiEndpointType = process.env.NEXT_PUBLIC_DEVAPI_URL;
 
-const cookie = new Cookie();
+const cookie:any = new Cookie();
 
 
-const Auth = () => {
-    const router = useRouter();
-    // const {isLogin,setLogin,profile,setUserInfo} = useContext(isLoginContext);
-
-    // const [email,setEmail] = useState("");
-    // const [password,setPassword] = useState("");
-    const [formData,setFormData] = useState({
+const Auth:React.FC = () => {
+    const router:any = useRouter();
+    const [formData,setFormData] = useState<authFormData>({
         email:'',
         password:'',
     });
     const {email,password} = formData; 
-    const onChange = (e) => {
+    const onChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         setFormData({...formData,[e.target.name]: e.target.value});
     }
 
-    const getUserId = async() =>{
-        const res = await fetch(
-            `${apiEndPoint}auth/user/myprofiles/`,
-            {
-                method: "GET",
-                headers:{
-                    "Authorization": `JWT ${cookie.get("access_token")}`,
-                },
-            }
-        );
-        const data = await res.json();
-        if (res.status === 200 || res.status === 201){
-            setLogin();
-            setUserInfo(data);
-        }else if(res.status === 400 || res.status === 401 || res.status === 402 || res.status === 403 || res.status === 404){
-            setLogin(false);
-        }
-
-    }
-
-    const postLogin = async () => {
+    const postLogin = async ():Promise<any> => {
         try{
-            
-            console.info("JWT認証を行います\n");
-    
             await fetch(
                 `${apiEndPoint}auth/account/jwt/create/`,
                 {
@@ -65,7 +41,7 @@ const Auth = () => {
                     },
                 }
             )
-            .then((res) => {
+            .then((res:any) => {
                 console.log(res);
                 if (res.status === 400 || res.status === 401 || res.status === 402){
                     console.error(res);
@@ -78,8 +54,8 @@ const Auth = () => {
                 }
 
             })
-            .then((data) => {
-                // console.log(data);
+            .then((data:loginResType) => {
+                console.log(data);
                 const options = {path: "/"};
                 cookie.set("access_token",data.access,options);
                 // getUserId();
@@ -91,12 +67,12 @@ const Auth = () => {
         }
     };
 
-    const authUser = async (e) => {
+    const authUser = async (e:React.FormEvent<HTMLFormElement>):Promise<void> => {
         e.preventDefault();
         postLogin();
     };
 
-    const goToRegister = () => {
+    const goToRegister = ():void => {
         router.push("/register")
     }
 

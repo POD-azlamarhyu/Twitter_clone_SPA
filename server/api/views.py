@@ -15,7 +15,7 @@ class TweetViewSet(viewsets.ModelViewSet):
     serializer_class = TweetSerializer
     
     def perform_create(self,serializer):
-        print(self.request.user)
+        # print(self.request.user)
         serializer.save(user_tweet=self.request.user)
         
 
@@ -31,7 +31,7 @@ class CommentListView(ListAPIView):
     serializer_class = CommentSerializer
     
     def get_queryset(self):
-        print(self.request.query_params)
+        # print(self.request.query_params)
         query = self.request.query_params.get("tid",None)
         qs = {}
         if query is not None:

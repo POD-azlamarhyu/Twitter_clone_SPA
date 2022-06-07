@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faHouse,faUser} from "@fortawesome/free-solid-svg-icons";
 import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 
-const HomeMenu = () => {
+const HomeMenu:React.FC = () => {
   return (
     <>
         <div className="md:w-3/12 flex md:flex-col m-0 p-0 md:justify-start">

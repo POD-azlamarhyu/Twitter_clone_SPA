@@ -1,26 +1,26 @@
 import Cookie from "universal-cookie";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
-import { BrowserRouter,Switch,Route } from "react-router-dom";
 import { useState,useEffect,useContext } from "react";
 import MainLayout from "../components/MainLayout";
-import TweetList from "../components/TweetList"
 import Tweet from "../components/Tweet";
 import NotFount from "../components/NotFount";
+import { tweetsType,apiEndpointType } from "./api/types";
+import React from "react";
 
-const apiEndPoint = process.env.NEXT_PUBLIC_DEVAPI_URL;
+const apiEndPoint:apiEndpointType = process.env.NEXT_PUBLIC_DEVAPI_URL;
 
-const cookie = new Cookie();
+const cookie:any = new Cookie();
 
-const Main = () => {
+const Main:React.FC = () => {
 
     const router = useRouter();
-    const [tweets,setTweets] = useState([]);
-    const [resTweet,setResTweet] = useState(true);
-    const [isAuth,setIsAuth] = useState(true);
+    const [tweets,setTweets] = useState<tweetsType[]>([]);
+    const [resTweet,setResTweet] = useState<boolean>(true);
+    const [isAuth,setIsAuth] = useState<boolean>(true);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchData = async ():Promise<void> => {
             const res = await fetch(
                 `${apiEndPoint}api/tweetlist/`,
                 {
@@ -52,7 +52,7 @@ const Main = () => {
                     <div className='my-3'>
                         {
                             tweets && resTweet &&
-                                tweets.map((tweet) => {
+                                tweets.map((tweet:tweetsType) => {
                                     return(
                                         <Tweet key={tweet.id} tweet={tweet} />
                                     )

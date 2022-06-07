@@ -3,21 +3,16 @@ import CreateProfile from "./CreateProfile";
 import EditProfile from './EditProfile';
 import { useState,useEffect,useContext } from "react";
 import NotFount from './NotFount';
+import { profileType,editProfileType } from '../pages/api/types';
+
 const NoImage = require("../public/no_image_logo.png").default;
 
-const DisplayProfile = ({myprofile}) => {
+const DisplayProfile = ({myprofile}:{myprofile:profileType}) => {
 
-    const [isOpenModal,setIsOpenModal] = useState(false);
-    const [isIcon,setIsIcon] = useState("");
+    const [isOpenModal,setIsOpenModal] = useState<boolean>(false);
 
-    const [isCreateOpenModal,setIsCreateOpenModal] = useState(false);
-
-    const openEditProfileModal = () =>{
+    const openEditProfileModal = ():void =>{
         setIsOpenModal(!isOpenModal);
-    }
-
-    const openCreateProfileModal = () =>{
-        setIsCreateOpenModal(!isCreateOpenModal);
     }
 
   return (
@@ -62,7 +57,12 @@ const DisplayProfile = ({myprofile}) => {
             Edit Profile
         </button>
     </div>
-    <EditProfile isOpenModal={isOpenModal} setIsOpenModal={setIsOpenModal} profile_id ={myprofile.id} currentprofile={myprofile}/> 
+    <EditProfile 
+        isOpenModal={isOpenModal} 
+        setIsOpenModal={setIsOpenModal} 
+        profile_id ={myprofile.id} 
+        currentprofile={myprofile}
+    /> 
     </>
   )
 }

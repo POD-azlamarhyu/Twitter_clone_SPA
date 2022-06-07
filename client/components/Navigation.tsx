@@ -2,12 +2,13 @@ import Link from "next/link";
 import {useRouter} from "next/router";
 import Cookie from "universal-cookie";
 import { useState,useEffect,useContext } from "react";
+import React from "react";
 
 const cookie = new Cookie();
 
-const Navigation = () => {
+const Navigation: React.FC= () => {
 
-    const [isLogin,setIsLogin] = useState(false);
+    const [isLogin,setIsLogin] = useState<boolean>(false);
 
     useEffect(() => {
         if(cookie.get("access_token")){
@@ -16,13 +17,13 @@ const Navigation = () => {
     },[isLogin]);
 
     const router = useRouter();
-    const postLogout = () => {
+    const postLogout = ():void => {
         const options = {path: "/"}
         cookie.remove("access_token",options);
         router.push("/auth")
     }
 
-    const goToHome = () =>{
+    const goToHome = ():void =>{
         router.push("/main");
     }
 

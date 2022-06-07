@@ -6,7 +6,7 @@ import {createContext,useState} from 'react';
 
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const isLoginContext = createContext();  
+  const isLoginContext = createContext();
 
   const [isLogin,setIsLogin] = useState(false);
   const setLogin = () => {
