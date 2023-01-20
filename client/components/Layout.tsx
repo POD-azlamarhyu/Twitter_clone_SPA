@@ -19,4 +19,4 @@ const Layout:React.FC = ({children,title}:{children:any,title:string}) => {
   )
 }
 
-export default Layout
+export default Layout;
