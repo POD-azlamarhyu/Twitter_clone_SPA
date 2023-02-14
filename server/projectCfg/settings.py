@@ -89,6 +89,9 @@ DATABASES = {
         'PASSWORD': PW,
         'HOST':'db',
         'PORT':5432,
+        'TEST': {
+            'NAME': 'test_db',
+        },
     }
 }
 
