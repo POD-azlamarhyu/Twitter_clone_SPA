@@ -11,7 +11,7 @@ class TweetSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Tweet
-        fields = ('id','text','user_tweet','created_on','tweet_img','update_on','like')
+        fields = ('id','text','user_tweet','created_on','tweet_img','update_on','tweet_like')
         extra_kwargs = {'user_tweet' : {'read_only': True}}
         
         
@@ -28,6 +28,6 @@ class CommentSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Comment
-        fields = ('id','text','user_comment','tweet','comment_img','created_on')
+        fields = ('id','text','user_comment','tweet','comment_img','created_on','update_on','comment_like')
         extra_kwargs = {'user_comment': {'read_only':True}}
     

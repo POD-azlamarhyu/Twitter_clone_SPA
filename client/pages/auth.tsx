@@ -27,6 +27,7 @@ const Auth:React.FC = () => {
     }
 
     const postLogin = async ():Promise<any> => {
+        console.log(apiEndPoint);
         try{
             await fetch(
                 `${apiEndPoint}auth/account/jwt/create/`,
@@ -37,7 +38,7 @@ const Auth:React.FC = () => {
                         password:password
                     }),
                     headers:{
-                         "Content-Type": "application/json",
+                        "Content-Type": "application/json",
                     },
                 }
             )

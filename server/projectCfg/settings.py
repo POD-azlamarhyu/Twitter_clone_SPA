@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 import os
 from .env import *
+from django.core.management.utils import get_random_secret_key
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -166,3 +167,19 @@ SIMPLE_JWT = {
 }
 AUTH_USER_MODEL = 'accounts.User'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}

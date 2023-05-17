@@ -2,8 +2,10 @@ version: '3.8'
 
 services:
   db:
-    container_name: cont_db
-    image: postgres:13
+    container_name: twitter_cont_db
+    build: 
+        context: .
+        dockerfile: DockerfilePostgre
     volumes:
       - pgdata:/var/lib/postgres/data
     ports:
@@ -14,21 +16,21 @@ services:
       - POSTGRES_PASSWORD=${POSTGRE_PW}
 
   backend:
-    container_name: cont_back
+    container_name: twitter_cont_back
     build:
       context: .
       dockerfile: DockerfilePython
     volumes:
       - ./server:/server
     tty: true
-    command: python manage.py runserver 0:8000
+    command: python manage.py runserver 0.0.0.0:8000
     ports:
       - 8000:8000
     depends_on:
       - db
 
   frontend:
-    container_name: cont_front
+    container_name: twitter_cont_front
     build:
       context: .
       dockerfile: DockerfileNode

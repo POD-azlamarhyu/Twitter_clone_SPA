@@ -3,9 +3,9 @@ import {useRouter} from "next/router";
 import Cookie from "universal-cookie";
 import { useState,useEffect,useContext } from "react";
 import React from "react";
-
+import { apiEndpointType,authFormData,loginResType } from "./api/types";
 const cookie = new Cookie();
-
+const apiEndPoint:apiEndpointType = process.env.NEXT_PUBLIC_DEVAPI_URL;
 const Navigation: React.FC= () => {
 
     const [isLogin,setIsLogin] = useState<boolean>(false);
@@ -17,15 +17,47 @@ const Navigation: React.FC= () => {
     },[isLogin]);
 
     const router = useRouter();
-    const postLogout = ():void => {
+    const postLogout = async ():void => {
         const options = {path: "/"}
-        cookie.remove("access_token",options);
-        router.push("/auth")
-    }
+        try{
+            await fetch(
+                `${apiEndPoint}auth/account/jwt/verify/`,
+                {
+                    method:"POST",
+                    body:JSON.stringify({
+                        token: `${cookie.get("access_token")}`
+                    }),
+                    headers:{
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
+            .then((res:any) => {
+                console.log(res);
+                if (res.status === 400 || res.status === 401 || res.status === 402){
+                    console.error(res);
+                    throw "エラーが発生しました";
+                }else if(res.ok){
+                    return res.json();
+                }else{
+                    console.info(res);
+                    return;
+                }
+
+            })
+            cookie.remove("access_token",options);
+            router.push("/auth");
+        }catch(error){
+            alert(error);
+        }
+
+        
+        
+    };
 
     const goToHome = ():void =>{
         router.push("/main");
-    }
+    };
 
     return (
         <>

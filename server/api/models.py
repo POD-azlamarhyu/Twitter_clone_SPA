@@ -32,15 +32,16 @@ class Tweet(models.Model):
     )
     created_on = models.DateTimeField(
         verbose_name="tweet date",
+        editable=False,
         auto_now_add=True
     )
     update_on = models.DateTimeField(
-        verbose_name="tweet edit",
+        verbose_name="tweet edit at",
         auto_now=True,
     )
-    like = models.ManyToManyField(
+    tweet_like = models.ManyToManyField(
         User,
-        related_name="like",
+        related_name="tweet_like",
         blank=True    
     )
     
@@ -68,7 +69,21 @@ class Comment(models.Model):
         upload_to=return_comment_image_path
     )
     created_on=models.DateTimeField(
-        auto_now_add=True
+        auto_now_add=True,
+        editable=False,
+        null=True,
+        blank=True
+    )
+    comment_like = models.ManyToManyField(
+        User,
+        related_name="comment_like",
+        blank=True    
+    )
+    update_on = models.DateTimeField(
+        verbose_name="comment edit at",
+        default=timezone.now,
+        null=True,
+        blank=True
     )
     
     def __str__(self):

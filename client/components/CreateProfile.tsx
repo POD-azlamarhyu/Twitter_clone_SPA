@@ -65,8 +65,8 @@ const CreateProfile = ({isCreateOpenModal,setIsCreateOpenModal}:{isCreateOpenMod
         inputImageDom.current.click();
     }
 
-  return (
-      <>
+    return (
+    <>
         {isCreateOpenModal ? (
             <div id='overlay' className='md:fixed top-0 left-0 w-full h-full bg-gray-600 flex flex-col items-center justify-center  z-10 bg-opacity-90'>
                 <div className='bg-white border-2 md:w-3/5'>
@@ -139,8 +139,8 @@ const CreateProfile = ({isCreateOpenModal,setIsCreateOpenModal}:{isCreateOpenMod
         ):(
             <></>
         )}
-      </>
-  )
+    </>
+    )
 }
 
 export default CreateProfile;
