@@ -46,6 +46,7 @@ const Navigation: React.FC= () => {
 
             })
             cookie.remove("access_token",options);
+            cookie.remove("is_auth",options);
             router.push("/auth");
         }catch(error){
             alert(error);

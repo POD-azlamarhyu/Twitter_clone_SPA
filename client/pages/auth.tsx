@@ -29,7 +29,6 @@ const Auth:React.FC = () => {
     }
 
     const postLogin = async ():Promise<any> => {
-        console.log(apiEndPoint);
         try{
             await fetch(
                 `${apiEndPoint}auth/account/jwt/create/`,
@@ -61,6 +60,8 @@ const Auth:React.FC = () => {
                 console.log(data);
                 const options = {path: "/"};
                 cookie.set("access_token",data.access,options);
+                // cookie.set("is_auth","true",options);
+                
                 // getUserId();
                 router.push("/main");
             });

@@ -171,7 +171,7 @@ const Tweet:React.FC = () => {
           res = await fetch(
             `${apiEndPoint}api/tweet/${tid}/`,
             {
-              method: "PUT",
+              method: "PATCH",
               headers:{
                 // "Content-Type": "application/json",
                 "Authorization": `JWT ${cookie.get("access_token")}`,

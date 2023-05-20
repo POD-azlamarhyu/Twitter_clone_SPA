@@ -17,37 +17,42 @@ const Comment:React.FC = () => {
     const {cid,tid}:{cid:number,tid:number} = router.query;
 
     const [commentDetail,setCommentDetail] = useState<commentType>({
-      id:0,
-      text:"",
-      user_comment:0,
-      tweet:0,
-      comment_img:"",
-      created_on:"",
+        id:0,
+        text:"",
+        user_comment:0,
+        tweet:0,
+        comment_img:"",
+        created_on:"",
     });
     const [isAuth,setIsAuth] = useState<boolean>(true);
     const [resCommentDetail,setResCommentDetail] = useState<boolean>(true);
     const [myprofile,setMyprofile] = useState<profileType>({
-      id: 0,
-      nickname:"",
-      user_profile:0,
-      account:'',
-      bio: '',
-      icon:'',
-      link: "",
-      created_on:'',
-      update_on: '',
+        id: 0,
+        nickname:"",
+        user_profile:0,
+        account:'',
+        bio: '',
+        icon:'',
+        link: "",
+        created_on:'',
+        update_on: '',
     });
     
     useEffect(() => {
-      const fetchData = async ():Promise<void> => {
-        const res = await fetch(
-          `${apiEndPoint}api/comment/${cid}/`,
-          {
-            method:"GET",
-            headers:{
-              "Authorization": `JWT ${cookie.get("access_token")}`,
-            },
-          }
+        const fetchData = async ():Promise<void> => {
+            if (cookie.get("is_auth") !== "true"){
+                router.push('/auth');
+            }else{
+                console.log("login!");
+            }
+            const res = await fetch(
+                `${apiEndPoint}api/comment/${cid}/`,
+            {
+                method:"GET",
+                headers:{
+                    "Authorization": `JWT ${cookie.get("access_token")}`,
+                },
+            }
         );
         const data = await res.json();
         
@@ -59,8 +64,8 @@ const Comment:React.FC = () => {
         }else{
             setResCommentDetail(false);
         }
-      };
-      fetchData();
+        };
+        fetchData();
     },[cid]);
     useEffect(()=> {
       const getUserId = async():Promise<void> =>{

@@ -20,14 +20,16 @@ const tweetPost:React.FC = () => {
     const [text,setText] = useState<string>("");
     const inputImageDom = useRef();
     const like:number[] = [];
-
-
-    // const onChangeForm = (e) => {
-    //     setFormData({...formData,[e.target.name]: e.target.value});
-    // }
+    const [isLogin,setIsLogin] = useState<boolean>(false);
 
     useEffect(() => {
         const getUserId = async ():Promise<void> => {
+            if (cookie.get("is_auth") !== "true"){
+                router.push('/auth');
+            }else{
+                console.log("login!");
+                setIsLogin(true);
+            }
             const res = await fetch(
                 `${apiEndPoint}auth/user/myprofiles/`,
                 {

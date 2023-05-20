@@ -34,11 +34,19 @@ const Profile:React.FC = () => {
         update_on: '',
     });
     const [isLogin,setIsLogin] = useState<boolean>(false);
-    
+    const router = useRouter();
     const [isCreateOpenModal,setIsCreateOpenModal] = useState<boolean>(false);
 
     useEffect(()=> {
-        const getUserId = async():void =>{
+
+        const getUserId = async():Promise<void> =>{
+            if (cookie.get("is_auth") !== "true"){
+                router.push('/auth');
+            }else{
+                console.log("login!");
+                setIsLogin(true);
+            }
+
             const res = await fetch(
                 `${apiEndPoint}auth/user/myprofiles/`,
                 {
@@ -59,6 +67,7 @@ const Profile:React.FC = () => {
     
         }
         getUserId();
+        
     },[cookie.get("access_token")]);
 
     const openCreateProfileModal = ():void =>{

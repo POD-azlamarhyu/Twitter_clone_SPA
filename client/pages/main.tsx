@@ -18,9 +18,18 @@ const Main:React.FC = () => {
     const [tweets,setTweets] = useState<tweetsType[]>([]);
     const [resTweet,setResTweet] = useState<boolean>(true);
     const [isAuth,setIsAuth] = useState<boolean>(true);
+    const [isLogin,setIsLogin] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchData = async ():Promise<void> => {
+            console.log(isLogin)
+            if (cookie.get("is_auth") !== "true"){
+                router.push('/auth');
+            }else{
+                console.log("login!");
+                setIsLogin(true);
+            }
+
             const res = await fetch(
                 `${apiEndPoint}api/tweetlist/`,
                 {
@@ -35,7 +44,7 @@ const Main:React.FC = () => {
                 setIsAuth(false);
                 setResTweet(false);
             }else if(res.status === 200 || res.status === 201){
-               setTweets(data);
+                setTweets(data);
             }else{
                 setResTweet(false);
             }
