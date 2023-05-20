@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app'
 import Profile from './profile/profile';
 import Auth from './auth';
 import {createContext,useState} from 'react';
+import { CookiesProvider } from "react-cookie";
 
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -20,7 +21,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <isLoginContext.Provider value={{isLogin,setLogin,profile,setUserInfo}}>
-      <Component {...pageProps} />
+        <CookiesProvider>
+            <Component {...pageProps} />
+        </CookiesProvider>
     </isLoginContext.Provider>
   );
 }
