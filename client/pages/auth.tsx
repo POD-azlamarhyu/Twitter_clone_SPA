@@ -60,7 +60,7 @@ const Auth:React.FC = () => {
                 console.log(data);
                 const options = {path: "/"};
                 cookie.set("access_token",data.access,options);
-                // cookie.set("is_auth","true",options);
+                cookie.set("is_auth","true",options);
                 
                 // getUserId();
                 router.push("/main");

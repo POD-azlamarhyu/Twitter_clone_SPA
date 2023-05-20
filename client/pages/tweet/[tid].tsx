@@ -22,27 +22,27 @@ const Tweet:React.FC = () => {
     const {tid}:{tid:number} = router.query;
 
     const [tweetDetail,setTweetDetail] = useState<tweetsType>({
-      id:0,
-      text:"",
-      user_tweet:0,
-      created_on:"",
-      tweet_img:"",
-      update_on:"",
-      like:[],
+        id:0,
+        text:"",
+        user_tweet:0,
+        created_on:"",
+        tweet_img:"",
+        update_on:"",
+        tweet_like:[],
     });
     const [isAuth,setIsAuth] = useState<boolean>(true);
     const [resTweetDetail,setResTweetDetail] = useState<boolean>(true);
     const [likesArray,setLikesArray] = useState<number[]>([]);
     const [myprofile,setMyprofile] = useState<profileType>({
-      id: 0,
-      nickname:"",
-      user_profile:0,
-      account:'',
-      bio: '',
-      icon:'',
-      link: "",
-      created_on:'',
-      update_on: '',
+        id: 0,
+        nickname:"",
+        user_profile:0,
+        account:'',
+        bio: '',
+        icon:'',
+        link: "",
+        created_on:'',
+        update_on: '',
     });
     const [isLogin,setIsLogin] = useState<boolean>(false);
     
@@ -58,13 +58,14 @@ const Tweet:React.FC = () => {
           }
         );
         const data = await res.json();
-
+        console.log("data,",data);
         if (res.status === 401){
             setIsAuth(false);
             setResTweetDetail(false);
         }else if(res.status === 200 || res.status === 201){
             setTweetDetail(data);
-            setLikesArray(data.like);
+            console.log(data.tweet_like);
+            setLikesArray(data.tweet_like);
         }else{
             setResTweetDetail(false);
         }
@@ -117,93 +118,98 @@ const Tweet:React.FC = () => {
     }
 
     const checkIsLike = ():boolean =>{
-      let isExist:boolean=false;
-      if(likesArray !== null){
-        isExist = likesArray.some((elem:number)=>{
-          return elem === myprofile.user_profile;
+        let isExist:boolean=false;
+        if(likesArray !== null){
+            isExist = likesArray.some((elem:number)=>{
+            return elem === myprofile.user_profile;
         });
-      }else{
-        isExist=false;
-      }
-
-      return isExist;
+        }else{
+            isExist=false;
+        }
+        return isExist;
     }
 
     const onPatchLike = async(e:React.MouseEvent<HTMLInputElement>):Promise<void> =>{
-      // e.preventDefault();
-      const formData:any = new FormData();
-      const patchLikeAry:number[] = likesArray;
-      const isPostedLike:boolean = checkIsLike();
-      const uid:number = myprofile.user_profile;
-      let isExtract:number = patchLikeAry.length;
+        e.preventDefault();
+        const formData:any ={};
+        const patchLikeAry:number[] = likesArray;
+        const isPostedLike:boolean = checkIsLike();
+        const uid:number = myprofile.user_profile;
+        const patchAry:number[] = []; 
 
-      if (isPostedLike){
-        patchLikeAry.forEach((elem:number)=>{
-          if(elem !== uid){
-            formData.append("like",elem);
-          }
-        })
-        
-      }else{
-        patchLikeAry.push(uid);
-        patchLikeAry.forEach((elem:number)=>{
-          formData.append("like",elem);
-        });
-      }
-      let res:any;
-      if(!isPostedLike){
-          // console.log("新たにLikeを追加");
-          res = await fetch(
-            `${apiEndPoint}api/tweet/${tid}/`,
-            {
-              method: "PATCH",
-              headers:{
-                // "Content-Type": "application/json",
-                Authorization: `JWT ${cookie.get("access_token")}`,
-              },
-              body: formData,
-            }
-          );
-      }else{
-        if(isExtract === 1){
-          // console.log("Like初期化");
-          formData.append("text",tweetDetail.text)
-          res = await fetch(
-            `${apiEndPoint}api/tweet/${tid}/`,
-            {
-              method: "PATCH",
-              headers:{
-                // "Content-Type": "application/json",
-                "Authorization": `JWT ${cookie.get("access_token")}`,
-              },
-              body: formData,
-            }
-          );
+        let isExtract:number = patchLikeAry.length;
+        console.log("parch like ary",patchLikeAry);
+        if (isPostedLike){
+            patchLikeAry.forEach((elem:number)=>{
+                if(elem !== uid){
+                    // formData.append("tweet_like",elem);
+                    patchAry.push(elem);
+                }
+            })
         }else{
-          // console.log("unlikeします");
-          res = await fetch(`${apiEndPoint}api/tweet/${tid}/`,{
-              method: "PATCH",
-              headers: {
-                // "Content-Type": "application/json",
-                "Authorization": `JWT ${cookie.get("access_token")}`,
-              },
-              body: formData,
-            }
-          );
+            patchLikeAry.push(uid);
+            patchLikeAry.forEach((elem:number)=>{
+                // formData.append("tweet_like",elem);
+                patchAry.push(elem);
+            });
         }
-      }
-      const data:tweetsType|any = await res.json();
-      if(res.status===200){
-        console.log("変更しました");
-        console.log(data);
-      }else{
-        console.log(res);
-        console.log("失敗しました");
-      }
-      
+        console.log("patchAry",patchAry);
+        formData["tweet_like"]= patchAry;
+        console.log(formData);
+        let res:any;
+        if(!isPostedLike){
+            console.log("新たにLikeを追加");
+            res = await fetch(
+                `${apiEndPoint}api/tweet/${tid}/`,
+                {
+                    method: "PATCH",
+                    headers:{
+                        "Content-Type": "application/json",
+                        "Authorization": `JWT ${cookie.get("access_token")}`,
+                    },
+                    body: JSON.stringify(formData),
+                }
+            );
+        }else{
+            if(isExtract === 1){
+                console.log("Like初期化");
+                formData["text"]=tweetDetail.text;
+                console.log(formData);
+                res = await fetch(
+                    `${apiEndPoint}api/tweet/${tid}/`,
+                    {
+                    method: "PATCH",
+                    headers:{
+                        "Content-Type": "application/json",
+                        "Authorization": `JWT ${cookie.get("access_token")}`,
+                    },
+                    body: JSON.stringify(formData),
+                    }
+                );
+            }else{
+                console.log("unlikeします");
+                res = await fetch(`${apiEndPoint}api/tweet/${tid}/`,{
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `JWT ${cookie.get("access_token")}`,
+                    },
+                    body: JSON.stringify(formData),
+                    }
+                );
+            }
+        }
+        const data:tweetsType|any = await res.json();
+        if(res.status===200){
+            console.log("変更しました");
+            console.log(data);
+        }else{
+            console.log(res);
+            console.log("失敗しました");
+        }
     };
     
-  return (
+    return (
     <>
         <Layout title={`tweet detail`}>
             <div className="w-full h-full flex flex-row">

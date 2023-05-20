@@ -31,7 +31,7 @@ const Main:React.FC = () => {
             }
 
             const res = await fetch(
-                `${apiEndPoint}api/tweetlist/`,
+                `${apiEndPoint}api/tweet/list/`,
                 {
                     method: "GET",
                     headers:{

@@ -18,7 +18,10 @@ class TweetViewSet(viewsets.ModelViewSet):
         # print(self.request.user)
         serializer.save(user_tweet=self.request.user)
         
-
+class TweetListTopThousandView(ListAPIView):
+    queryset = Tweet.objects.all().order_by('-created_on')[:500]
+    serializer_class = TweetSerializer
+    
 
 class TweetListView(ListAPIView):
     
