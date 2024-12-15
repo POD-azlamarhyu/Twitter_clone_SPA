@@ -5,7 +5,7 @@ services:
     container_name: twitter_cont_db
     build: 
         context: .
-        dockerfile: DockerfilePostgre
+        dockerfile: ./docker/postgre/Dockerfile
     volumes:
       - pgdata:/var/lib/postgres/data
     ports:
@@ -19,7 +19,7 @@ services:
     container_name: twitter_cont_back
     build:
       context: .
-      dockerfile: DockerfilePython
+      dockerfile: ./docker/python/Dockerfile
     volumes:
       - ./server:/server
     tty: true
@@ -33,7 +33,7 @@ services:
     container_name: twitter_cont_front
     build:
       context: .
-      dockerfile: DockerfileNode
+      dockerfile: ./docker/node/Dockerfile
     restart: always
     volumes:
       - ./client:/client

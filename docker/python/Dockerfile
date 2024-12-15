@@ -1,4 +1,4 @@
-FROM python:3.9-buster
+FROM python:3.12.7-slim-bullseye
 USER root
 
 ENV LANG ja_JP.UTF-8
